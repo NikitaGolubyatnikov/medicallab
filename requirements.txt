@@ -1,0 +1,11 @@
+PyQt6
+mysql-connector-python==8.0.33
+bcrypt
+Pillow
+python-dotenv
+fpdf
+reportlab
+requests
+openpyxl
+matplotlib
+fpdf2
