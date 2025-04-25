@@ -330,17 +330,21 @@ class AdminPanel(QMainWindow):
     def reset_session_timer(self):
         self.session_time_left = 600
 
-        # Обновление отображения времени
         self.session_display_timer.stop()
-        self.session_display_timer.timeout.disconnect()
+        try:
+            self.session_display_timer.timeout.disconnect()
+        except TypeError:
+            pass
         self.session_display_timer.timeout.connect(self.update_session_display)
         self.session_display_timer.start(1000)
 
-        # ⬅️ Добавляем запуск таймера выхода
         self.session_timer.stop()
-        self.session_timer.timeout.disconnect()
+        try:
+            self.session_timer.timeout.disconnect()
+        except TypeError:
+            pass
         self.session_timer.timeout.connect(self.auto_logout)
-        self.session_timer.start(600_000)  # 10 минут = 600000 мс
+        self.session_timer.start(600_000)
 
     def update_session_display(self):
         self.session_time_left -= 1
