@@ -16,12 +16,15 @@
 
 1. Клонируйте репозиторий:
 
-git clone https://github.com/ТВОЙ_ЮЗЕР/medical-lab.git
-cd medical-lab ```
+git clone https://github.com/NikitaGolubyatnikov/medicallab.git
+cd medicallab
+
 
 2. Установите зависимости:
 
 pip install -r requirements.txt
+python -m venv .venv 
+.venv\Scripts\Activate.ps1
 
 3. Импортируйте базу данных:
 
