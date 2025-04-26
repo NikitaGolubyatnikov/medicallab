@@ -236,9 +236,8 @@ class LoginWindow(QWidget):
 
         QMessageBox.information(self, "Успех", "Успешный вход!")
 
-        self.session_time_left = 10
-        self.session_timer.start()
-        self.hide()
+        self.session_timer.stop()  # Остановить таймер обязательно!
+        self.close()  # Закрыть LoginWindow
 
     def reset_block(self):
         self.failed_attempts = 0

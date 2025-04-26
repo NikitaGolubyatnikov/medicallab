@@ -154,6 +154,7 @@ class AdminPanel(QMainWindow):
         else:
             self.avatar.setText("⚠")
 
+
         top_bar.addWidget(self.title_label)
         top_bar.addStretch()
         top_bar.addWidget(self.avatar)
@@ -241,7 +242,12 @@ class AdminPanel(QMainWindow):
                 users = [user for user in users if user['role'] == role]
 
             if search_text:
-                users = [user for user in users if search_text in user['login'].lower() or search_text in user['full_name'].lower()]
+                users = [user for user in users if
+                         search_text in user['login'].lower() or search_text in user['full_name'].lower()]
+
+            # ОЧИСТКА перед заполнением!
+            self.user_table.clearContents()
+            self.user_table.setRowCount(0)
 
             self.user_table.setRowCount(len(users))
             for row_idx, user in enumerate(users):
@@ -251,6 +257,7 @@ class AdminPanel(QMainWindow):
                 self.user_table.setItem(row_idx, 3, QTableWidgetItem(user['role']))
                 last_login = user['last_login'].strftime("%Y-%m-%d %H:%M:%S") if user['last_login'] else "Нет данных"
                 self.user_table.setItem(row_idx, 4, QTableWidgetItem(last_login))
+
         except Exception as e:
             print(f"Ошибка обновления пользователей: {e}")
 
@@ -362,11 +369,28 @@ class AdminPanel(QMainWindow):
 
     def auto_logout(self):
         print("[DEBUG] auto_logout вызван")
-        QMessageBox.information(self, "Сеанс", "Время сессии истекло. Возврат к окну входа.")
+
+        # Безопасное закрытие базы данных
+        try:
+            if hasattr(self, 'db') and self.db:
+                self.db.close()
+        except Exception as e:
+            print(f"[ERROR] Ошибка при закрытии БД: {e}")
+
+        # Остановка таймеров
+        try:
+            self.session_display_timer.stop()
+            self.session_timer.stop()
+        except Exception:
+            pass
+
+        # Новый подход — создаем LoginWindow с родителем
         from auth.login_window import LoginWindow
-        self.login_window = LoginWindow()
+        self.login_window = LoginWindow(parent=self)
         self.login_window.show()
-        self.close()  # <-- безопасно закрываем старое окно
+
+        # Отложенное закрытие AdminPanel (на следующем цикле событий)
+        QTimer.singleShot(0, self.close)
 
     '''def safe_restart(self):
         print("[LOG] soft restart admin panel")
