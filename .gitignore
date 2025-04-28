@@ -15,9 +15,6 @@ venv/
 .DS_Store
 Thumbs.db
 
-# SQL dumps
-*.sql
-
 # Logs
 *.log
 
